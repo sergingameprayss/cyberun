@@ -11,13 +11,13 @@ SRC = main.c character.c
 OBJ_DIR = obj
 
 # Arquivos objeto
-OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/character.o $(OBJ_DIR)/joystick.o
+OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/character.o $(OBJ_DIR)/joystick.o $(OBJ_DIR)/bullet.o $(OBJ_DIR)/gun.o
 
 # Flags do compilador
-CFLAGS = -Wall -Wextra -o $(shell pkg-config --cflags allegro-5 allegro_font-5 allegro_image-5 allegro_primitives-5)
+CFLAGS = -Wall -Wextra -o  $(shell pkg-config --cflags allegro-5 allegro_font-5 allegro_image-5 allegro_primitives-5) 
 
 # Flags do linker
-LDFLAGS = $(shell pkg-config --libs allegro-5 allegro_font-5 allegro_image-5 allegro_primitives-5)
+LDFLAGS = $(shell pkg-config --libs allegro-5 allegro_font-5 allegro_image-5 allegro_primitives-5) -lm
 
 # Regra padrão
 all: $(TARGET)
