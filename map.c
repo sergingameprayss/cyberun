@@ -2,7 +2,7 @@
 #include "map.h"
 
 
-void create_map(element **structures_vector, int max_x, int max_y, int num_structures, ALLEGRO_BITMAP *all_background, ALLEGRO_BITMAP *floor){
+void create_map(element **structures_vector, int max_y, ALLEGRO_BITMAP *all_background, ALLEGRO_BITMAP *floor){
 
     al_set_target_bitmap(all_background);
 
@@ -27,7 +27,11 @@ void create_map(element **structures_vector, int max_x, int max_y, int num_struc
 
     structures_vector[3] = create_element(4000, max_y - 200, 0, 0, 2 * 256, 0, floor); // Create the fourth platform
 
+    structures_vector[4] = create_element(3000, max_y - 260, 0, 0, 256, 0, floor); // Create the fourth platform
+    
+    structures_vector[5] = create_element(3200, max_y - 460, 0, 0, 192, 0, floor); // Create the fourth platform
 
+    structures_vector[6] = create_element(3600, max_y - 360, 0, 0, 548, 0, floor); // Create the fourth platform
     
 }
 

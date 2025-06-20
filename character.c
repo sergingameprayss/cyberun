@@ -23,7 +23,7 @@ player* player_create(int x, int y, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *bull
     new_player->falling = 1; // Initialize falling state
 
     new_player->basics = create_element(x, y, 5, 0, SIZE, SIZE, sprite);// Create the basic element with position and size
-    new_player->hp = 20;
+    new_player->hp = 50;
     new_player->direction = RIGHT; // Initialize character facing direction (0 = right, 1 = left, 2 = up, 3 = down)
     new_player->frame = 0; // Initialize frame for animation
     new_player->control = joystick_create();
@@ -58,7 +58,9 @@ void player_mov_x(player *self, char direction) {
     // Update velocity based on joystick input
 
     if (direction == LEFT) {
-        self->basics->vx = -5;
+        if(self->sandevistan){
+            self->basics->vx = -7;
+        } else self->basics->vx = -5;
         if (!((self->basics->x - 1*self->basics->vx) >=  2 * self->basics->width)) { 
             self->fix_camera = 1;
             return;
@@ -67,7 +69,9 @@ void player_mov_x(player *self, char direction) {
     } 
 
     if (direction == RIGHT) {
-        self->basics->vx = 5; // Set horizontal velocity to move right
+        if(self->sandevistan){
+            self->basics->vx = 7;
+        } else self->basics->vx = 5;
         if (!((self->basics->x + 1*self->basics->vx) <= MAX_X - 4 * self->basics->width)) { // Ensure the player does not move out of bounds
             self->fix_camera = 1;
             return;

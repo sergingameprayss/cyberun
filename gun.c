@@ -30,11 +30,11 @@ void pistol_destroy(pistol *gun){																	//Implementação da função 
 	free(gun);																						//Libera a memória da instância de pistola (!)
 }
 
-void update_bullets(pistol *gun, int left_limit, int right_limit){
+void update_bullets(pistol *gun, int left_limit, int right_limit, int vr){
 	bullet *previous = NULL;																																												//Variável auxiliar para salvar a posição imediatamente anterior na fila (!)
 	for (bullet *index = gun->shots; index != NULL;){																																				//Para cada projétil presente na lista de projéteis disparados (!)
-		if (!index->trajectory) index->x += BULLET_MOVE;																																					//Se a trajetória for para a esquerda, atualiza a posição para a esquerda (!)
-		else if (index->trajectory == 1) index->x -= BULLET_MOVE;																																			//Se a trajetória for para a direita, atualiza a posição para a esquerda (!)
+		if (!index->trajectory) index->x += BULLET_MOVE - vr;																																					//Se a trajetória for para a esquerda, atualiza a posição para a esquerda (!)
+		else if (index->trajectory == 1) index->x -= BULLET_MOVE + vr;																																			//Se a trajetória for para a direita, atualiza a posição para a esquerda (!)
 		
 		if ((index->x < left_limit) || (index->x > right_limit)){																																						//Verifica se o projétil saiu das bordas da janela (!)
 			if (previous){																																													//Verifica se não é o primeiro elemento da lista de projéteis (!)

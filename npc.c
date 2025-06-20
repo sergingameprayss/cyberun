@@ -13,7 +13,7 @@ npc* npc_create(int x, int y, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *bullet_art
         return NULL; // Check for element creation failure
     }
     new_npc->on_screen = 0;
-    new_npc->hp = 10; // Initialize hp
+    new_npc->hp = 40; // Initialize hp
     new_npc->direction = 0; // Initialize facing direction
     new_npc->frame = 0; // Initialize frame for animation
     new_npc->gun = pistol_create(); // Create a new gun for the npc
@@ -37,12 +37,12 @@ npc* npc_create(int x, int y, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *bullet_art
     return new_npc;
 }
 
-void npc_walk(npc *self, char direction, int vr) {
+void npc_walk(npc *self, char direction, int vr, int npc_velocity) {
     // Update velocity based on direction
     if (direction == LEFT) {
-        self->basics->vx = -5; // Move left
+        self->basics->vx = -npc_velocity; // Move left
     } else if (direction == RIGHT) {
-        self->basics->vx = 5; // Move right
+        self->basics->vx = npc_velocity; // Move right
     } else {
         self->basics->vx = 0; // Stop moving if no direction is specified
     }
@@ -54,8 +54,8 @@ void npc_shoot(npc *self) {
             bullet *shot;
         
         //somo com size para que o tiro saia do centro do quadrado (ele escala o quadrado na hora de desenhar)
-        if (!self->direction) shot = pistol_shot(self->basics->x + self->basics->width, self->basics->y + self->basics->width, self->direction, self->gun);										//Quadrado atira para a esquerda (!)
-        else if (self->direction == 1) shot = pistol_shot(self->basics->x, self->basics->y + self->basics->width, self->direction, self->gun);								//Quadrado atira para a direita (!)
+        if (!self->direction) shot = pistol_shot(self->basics->x + self->basics->width, self->basics->y + self->basics->height, self->direction, self->gun);										//Quadrado atira para a esquerda (!)
+        else if (self->direction == 1) shot = pistol_shot(self->basics->x, self->basics->y + self->basics->height, self->direction, self->gun);								//Quadrado atira para a direita (!)
         if (shot) self->gun->shots = shot;
     }
 }
@@ -98,17 +98,17 @@ void npc_update(npc *self, int left_limit, int right_limit, int vr){
             self->direction = LEFT; 
 
         // Update NPC position based on their behavior (e.g., moving towards the player)
-        self->walk(self, self->direction, vr); // Call the walk function for each NPC
+        self->walk(self, self->direction, vr, NPC_VELOCITY); // Call the walk function for each NPC
 
         if (!self->gun->timer){																																											//Verifica se a arma do primeiro jogador não está em cooldown (!)
 			self->shoot(self); 																																											//Se não estiver, faz um disparo (!)
 			self->gun->timer = NPC_PISTOL_COOLDOWN;																																							//Inicia o cooldown da arma (!)
 		} 
 
-        update_bullets(self->gun, 0, right_limit);
+        update_bullets(self->gun, 0, right_limit, vr);
 } // Function to update npc state (movement, shooting, etc.)
 
-void npc_collide(npc *self, element *player){
+char npc_collide(npc *self, element *player){
 
     switch(complex_collide(self->basics->x, self->basics->y, self->basics->x + self->basics->width, self->basics->y + self->basics->height,
                               player->x, player->y, player->x + player->width, player->y + player->height)){
@@ -135,9 +135,9 @@ void npc_collide(npc *self, element *player){
             //self->basics->y = player->y + player->height;
             break;
         default:
-            return;
+            return 0;
         }
-    
+        return 1;
 }
 
 void npc_death(npc *self){
@@ -163,7 +163,7 @@ void update_npc_group (npc **npc_group, int group_size, int left_limit, int righ
 
     } else if(npc_group[i]->hp <= 0){
             npc_death(npc_group[i]); //vai ficar chamadno toda vez?
-            update_bullets(npc_group[i]->gun, left_limit, right_limit);
+            update_bullets(npc_group[i]->gun, left_limit, right_limit, vr);
             continue;
         }
 
