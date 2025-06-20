@@ -42,6 +42,8 @@ element relative_floor;
 element relative_boss_floor;
 int map_ajustment = 0;
 char enemies_gone = 0;
+element *life;
+
 
 //poderiam ser variáveis globais,
 char num_frames;
@@ -156,6 +158,8 @@ int main(){
     create_map(vector_platform, SCREEN_Y, all_background, sprite_floor); // Create the map
     create_npc_group(enemies, NUM_NPCS, FLOOR_LEVEL, enemy1, bullet_enemy1);
 
+    life = create_element(2100, 360, 0, 0, al_get_bitmap_width(heart),al_get_bitmap_height(heart), heart);
+
     ALLEGRO_EVENT event;
     al_set_target_backbuffer(disp);
 
@@ -228,8 +232,6 @@ int main(){
                         map_ajustment += rolling_velocity;
                     }
 
-
-
                     if(map_ajustment < 0) {
                         map_ajustment = 0; // Prevent scrolling beyond the left edge
                     } else if(map_ajustment > 6144 - 1536) {
@@ -264,11 +266,22 @@ int main(){
                         
                     } else if (((al_get_timer_count(timer)) % (num_walk_frames + 2)) == 0) { // If sandevistan mode is active and the timer count is a multiple of the number of frames
                         al_draw_tinted_scaled_rotated_bitmap(background, al_map_rgba(128, 128, 128, 255), 0, 0, 0, 0, 0.8334, 0.7032, 0, 0);
-                    } //FAZER REPINTAR DE INICIO NA PRIMEIRA VEZ
+                    }
 
                     al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, 0, "X: %d Y: %d", player_1->basics->x, player_1->basics->y);
-                    if(adam_smasher)
-                        al_draw_textf(font, al_map_rgb(255, 255, 255), SCREEN_X/2, SCREEN_Y/2, 0, "X: %d Y: %d", adam_smasher->enemy->basics->x, adam_smasher->enemy->basics->y);
+                    
+                    if(life != NULL){
+                        if(life->x - map_ajustment < SCREEN_X && life->x - map_ajustment + life->width > 0) {
+                             al_draw_tinted_bitmap(life->sprite,  al_map_rgba(255, 0, 0, 255), life->x - map_ajustment, life->y, 0);
+                        }
+                        if(simple_collide(player_1->basics->x, player_1->basics->y, player_1->basics->x + player_1->basics->width, player_1->basics->y + player_1->basics->height,
+                                            life->x - map_ajustment, life->y, life->x + life->width - map_ajustment, life->y + life->height)){
+                                                player_1->hp += 4;
+                                                destroy_element(life);
+                                                life = NULL;
+                                            }
+                    }
+
                     //draw the objectis of the map that appear in the screen
 
                     //draw a long platform
@@ -356,7 +369,7 @@ int main(){
                             break;
 
                         case 4: // fire movement
-                            player_1->frame = (player_1->frame = ( al_get_timer_count(timer) / 3 )) % num_frames;
+                            player_1->frame = (( al_get_timer_count(timer) / 3 )) % num_frames;
                             al_draw_tinted_scaled_rotated_bitmap_region(player_1->basics->sprite, player_1->frame * frame_width, 4 * frame_height,
                                                                 48, 48, al_map_rgba(255, 255, 255, 255), 0, 0, player_1->basics->x + (1 - pow((double)49, (double)player_1->direction)),
                                                                 player_1->basics->y, 2.0, 2.0, 0.0, player_1->direction);
@@ -543,6 +556,9 @@ void destroy_stuff(){
     destroy_boss(adam_smasher);
     destroy_npc_group(enemies, NUM_NPCS);
 
+    if(life){
+        destroy_element(life);
+    }
 
     al_destroy_bitmap(adam_bullets);
     al_destroy_bitmap(adam_sprite);
