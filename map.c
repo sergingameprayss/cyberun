@@ -22,7 +22,7 @@ void create_map(element **structures_vector, int max_y, ALLEGRO_BITMAP *all_back
 
     structures_vector[1] = create_element(2048, 460, 0, 0, 2 * 64, 0, floor); // Create the second platform
 
-    structures_vector[2] = create_element(2264, max_y - 500, 0, 0, 2 * 192, 0, floor); // Create the third platform
+    structures_vector[2] = create_element(2264, max_y - 500, 0, 0, 2 * 192, 10, floor); // Create the third platform
 
 
     structures_vector[3] = create_element(4000, max_y - 200, 0, 0, 2 * 256, 0, floor); // Create the fourth platform

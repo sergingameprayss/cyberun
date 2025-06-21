@@ -65,7 +65,7 @@ char agro (boss *self, element *player){
     } else if (player->y < self->enemy->basics->y) {
         return UP;
     }
-    return -1;
+    return RIGHT;
 }
 
 char melee_attack (boss *self){
@@ -98,12 +98,12 @@ char update_boss_position(boss *self, int relative_floor, element *player){
         retorno = 2; // Indicate that the player is in the air
     }
 
-    if(!npc_collide(self->enemy, player)){
+    if(npc_collide(self->enemy, player) == 0){
         if (!self->enemy->gun->timer){																																											//Verifica se a arma do primeiro jogador não está em cooldown (!)
             self->enemy->shoot(self->enemy); 																																											//Se não estiver, faz um disparo (!)
             self->enemy->gun->timer = NPC_PISTOL_COOLDOWN;																																							//Inicia o cooldown da arma (!)
         } 		    																																								//Retorna o valor de retorno da função (!)      
-    } else retorno = 0;
+    } else if(retorno != 2) retorno = 0;
 
     return retorno;
 }

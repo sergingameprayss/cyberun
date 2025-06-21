@@ -415,7 +415,7 @@ int main(){
                                 al_draw_tinted_scaled_rotated_bitmap_region(adam_smasher->enemy->basics->sprite, adam_smasher->enemy->frame * 2 * frame_width, 0,
                                                                 adam_smasher->enemy->basics->width, adam_smasher->enemy->basics->height, al_map_rgba(255, 255, 255, 255), 0, 0, 
                                                                 adam_smasher->enemy->basics->x + (1 - pow((double)97, (double)(adam_smasher->enemy->direction % 2))),
-                                                                adam_smasher->enemy->basics->y - frame_height, 2.0, 2.0, 0.0, adam_smasher->enemy->direction % 2);
+                                                                adam_smasher->enemy->basics->y - frame_height, 2.0, 2.0, 0.0, (adam_smasher->enemy->direction % 2));
                                 
                                 break;
                             case 2:
@@ -437,8 +437,9 @@ int main(){
                                     player_1->hp -= adam_smasher->melee_attack(adam_smasher);
                                 }
                                 al_draw_tinted_scaled_rotated_bitmap_region(adam_smasher->enemy->basics->sprite, adam_smasher->enemy->frame * 96, 96,
-                                                                adam_smasher->enemy->basics->width, adam_smasher->enemy->basics->height, al_map_rgba(255, 255, 255, 255), 0, 0, adam_smasher->enemy->basics->x + (1 - pow((double)97, (double)(adam_smasher->enemy->direction % 2))),
-                                                                adam_smasher->enemy->basics->y - frame_height, 2.0, 2.0, 0.0, adam_smasher->enemy->direction % 2);
+                                                                adam_smasher->enemy->basics->width, adam_smasher->enemy->basics->height, al_map_rgba(255, 255, 255, 255), 0, 0, 
+                                                                adam_smasher->enemy->basics->x + (1 - pow((double)97, (double)(adam_smasher->enemy->direction % 2))),
+                                                                adam_smasher->enemy->basics->y - frame_height, 2.0, 2.0, 0.0, (adam_smasher->enemy->direction % 2));
                                 
                                 break;
                             }
@@ -584,7 +585,7 @@ char update_boss(){
         adam_smasher = boss_create(SCREEN_X / 2, SCREEN_Y / 2, adam_sprite, adam_bullets);
     }
 
-    if(adam_smasher->enemy->hp == 0){
+    if(adam_smasher->enemy->hp <= 0){
         update_bullets(adam_smasher->enemy->gun, 0, SCREEN_X, rolling_velocity);
         return -2;
     }
@@ -602,7 +603,7 @@ char update_boss(){
         adam_smasher->falling = 1; // Set falling state if not colliding with the floor
     }
     
-    if((adam_smasher->jumping) && (adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height >= (relative_boss_floor.y - 240))) {
+    if((adam_smasher->jumping) && (adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height >= (relative_boss_floor.y - 400))) {
         adam_smasher->jump(adam_smasher, UP); // Call the jump function if the player is jumping
     } else if(adam_smasher->falling) {
         adam_smasher->jumping = 0; // Reset jumping state if the player is falling

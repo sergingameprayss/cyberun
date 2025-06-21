@@ -54,8 +54,8 @@ void npc_shoot(npc *self) {
             bullet *shot;
         
         //somo com size para que o tiro saia do centro do quadrado (ele escala o quadrado na hora de desenhar)
-        if (!self->direction) shot = pistol_shot(self->basics->x + self->basics->width, self->basics->y + self->basics->height, self->direction, self->gun);										//Quadrado atira para a esquerda (!)
-        else if (self->direction == 1) shot = pistol_shot(self->basics->x, self->basics->y + self->basics->height, self->direction, self->gun);								//Quadrado atira para a direita (!)
+        if (!self->direction) shot = pistol_shot(self->basics->x + self->basics->width, self->basics->y + self->basics->height, (self->direction % 2), self->gun);										//Quadrado atira para a esquerda (!)
+        else if (self->direction == 1) shot = pistol_shot(self->basics->x, self->basics->y + self->basics->height, (self->direction % 2), self->gun);								//Quadrado atira para a direita (!)
         if (shot) self->gun->shots = shot;
     }
 }
