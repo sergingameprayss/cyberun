@@ -189,14 +189,16 @@ int main(){
                     joystick_fire(player_1->control); // Toggle fire button
                 }
                 if(event.keyboard.keycode == ALLEGRO_KEY_ESCAPE){
-                    if((tela == PAUSE) || tela == MENU || tela == GAMEOVER){
+                    if(tela != IN_GAME){
                         done = true;
                     } else tela = PAUSE;
 
                 }
                     
                 if(event.keyboard.keycode == ALLEGRO_KEY_ENTER){
-                    if(tela != GAMEOVER){
+                    if(tela == WIN){
+                        done = true;
+                    } else if(tela != GAMEOVER){
                         tela = IN_GAME;
                     }
                 }

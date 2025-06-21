@@ -59,7 +59,7 @@ void player_mov_x(player *self, char direction) {
 
     if (direction == LEFT) {
         if(self->sandevistan){
-            self->basics->vx = -7;
+            self->basics->vx = -8;
         } else self->basics->vx = -5;
         if (!((self->basics->x - 1*self->basics->vx) >=  2 * self->basics->width)) { 
             self->fix_camera = 1;
@@ -70,7 +70,7 @@ void player_mov_x(player *self, char direction) {
 
     if (direction == RIGHT) {
         if(self->sandevistan){
-            self->basics->vx = 7;
+            self->basics->vx = 8;
         } else self->basics->vx = 5;
         if (!((self->basics->x + 1*self->basics->vx) <= MAX_X - 4 * self->basics->width)) { // Ensure the player does not move out of bounds
             self->fix_camera = 1;

@@ -19,7 +19,7 @@ boss* boss_create(int x, int y, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *bullet_a
     new_boss->enemy->on_screen = 1;
     new_boss->enemy->basics->height = 96;
     new_boss->enemy->basics->width = 96;
-    new_boss->enemy->hp = 100; // Initialize hp
+    new_boss->enemy->hp = 80; // Initialize hp
     new_boss->enemy->gun->damage = 3;
     new_boss->jumping = 0;
     new_boss->falling = 0;
