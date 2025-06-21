@@ -80,7 +80,9 @@ char update_boss_position(boss *self, int relative_floor, element *player){
 
 
     self->enemy->direction = self->agro(self, player);
-    self->enemy->walk(self->enemy, self->enemy->direction, 0, 3);
+    if(!self->sandevistan){
+        self->enemy->walk(self->enemy, self->enemy->direction, 0, 3);
+    } else self->enemy->walk(self->enemy, self->enemy->direction, 0, 5);
 
 	if (self->enemy->direction == UP) {
         // controle para cima e o player não está pulando nem caindo

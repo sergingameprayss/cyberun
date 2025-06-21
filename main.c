@@ -248,7 +248,6 @@ int main(){
                     }
 
                     
-                    //melhorar isso aqui, talvez com uma função de scroll
                     if(!player_1->sandevistan) { // If sandevistan mode is not active
                         al_reparent_bitmap(background, all_background, map_ajustment, 0, 1536, 1024); // Reparent the background bitmap to create a scrolling effect
                         //cuidar final mapa rolling background deve ser feito.
@@ -405,9 +404,9 @@ int main(){
                     }
                     if(enemies_gone >= 6){
                         if(adam_smasher){
-                        check_damage_enemies(player_1, adam_smasher->enemy);
-                        check_damage_player(adam_smasher->enemy, player_1);
-
+                            check_damage_enemies(player_1, adam_smasher->enemy);
+                            check_damage_player(adam_smasher->enemy, player_1);
+                            adam_smasher->sandevistan = player_1->sandevistan;
                         }
  
                         switch (update_boss()){
@@ -422,7 +421,8 @@ int main(){
                             case 2:
                                 adam_smasher->enemy->frame = 2;
                                 al_draw_tinted_scaled_rotated_bitmap_region(adam_smasher->enemy->basics->sprite, adam_smasher->enemy->frame * 2 * frame_width, 2 * 96,
-                                                                adam_smasher->enemy->basics->width, adam_smasher->enemy->basics->height, al_map_rgba(255, 255, 255, 255), 0, 0, adam_smasher->enemy->basics->x + (1 - pow((double)97, (double)(adam_smasher->enemy->direction % 2))),
+                                                                adam_smasher->enemy->basics->width, adam_smasher->enemy->basics->height, al_map_rgba(255, 255, 255, 255), 0, 0, 
+                                                                adam_smasher->enemy->basics->x + (1 - pow((double)97, (double)(adam_smasher->enemy->direction % 2))),
                                                                 adam_smasher->enemy->basics->y - frame_height, 2.0, 2.0, 0.0, adam_smasher->enemy->direction % 2);
                                 
                                 break;
