@@ -579,68 +579,6 @@ void destroy_stuff(){
     al_destroy_event_queue(queue);
 }
 
-char update_boss(){
-    //se morreu só atualiza os tiros que ja tinham sido feitos
-    if(!adam_smasher){
-        adam_smasher = boss_create(SCREEN_X / 2, SCREEN_Y / 2, adam_sprite, adam_bullets);
-    }
-
-    if(adam_smasher->enemy->hp <= 0){
-        update_bullets(adam_smasher->enemy->gun, 0, SCREEN_X, rolling_velocity);
-        return -2;
-    }
-
-    update_relative_floor(&relative_boss_floor, map_ajustment, &relative_boss_floor); // Update the relative floor level based on the player's position
-
-    if(simple_collide(adam_smasher->enemy->basics->x, adam_smasher->enemy->basics->y, adam_smasher->enemy->basics->x + adam_smasher->enemy->basics->width, 
-                        adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height,
-                        relative_boss_floor.x, relative_boss_floor.y, relative_boss_floor.x + relative_boss_floor.width, relative_boss_floor.y + relative_boss_floor.height)) {
-        adam_smasher->enemy->basics->y = relative_boss_floor.y - adam_smasher->enemy->basics->height; // Set player position to the top of the floor
-        adam_smasher->enemy->basics->vy = 0; // Reset vertical velocity
-        adam_smasher->jumping = 0; // Reset jumping state
-        adam_smasher->falling = 0; // Reset falling state
-    } else {
-        adam_smasher->falling = 1; // Set falling state if not colliding with the floor
-    }
-    
-    if((adam_smasher->jumping) && (adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height >= (relative_boss_floor.y - 400))) {
-        adam_smasher->jump(adam_smasher, UP); // Call the jump function if the player is jumping
-    } else if(adam_smasher->falling) {
-        adam_smasher->jumping = 0; // Reset jumping state if the player is falling
-        adam_smasher->fall(adam_smasher, DOWN); // Call the fall function if the player is falling
-        int i;
-        for(i = 0; i < NUM_PLATFORMS; i++) {																																										//Verifica se o primeiro jogador está colidindo com alguma plataforma (!)
-            if(simple_collide(adam_smasher->enemy->basics->x, adam_smasher->enemy->basics->y, adam_smasher->enemy->basics->x + adam_smasher->enemy->basics->width,
-                                adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height,
-                                vector_platform[i]->x - map_ajustment, vector_platform[i]->y, (vector_platform[i]->x - map_ajustment) + vector_platform[i]->width, 
-                                vector_platform[i]->y + vector_platform[i]->height)) {
-                
-                update_relative_floor(vector_platform[i], map_ajustment, &relative_boss_floor); // Update the floor level based on the platform's position
-                adam_smasher->enemy->basics->y = vector_platform[i]->y - adam_smasher->enemy->basics->height; // Set player position to the top of the platform
-                adam_smasher->enemy->basics->vy = 0; // Reset vertical velocity
-                adam_smasher->falling = 0; // Stop falling                 
-                
-                break;
-            } 
-
-        }
-        if(i == NUM_PLATFORMS) { // If no collision with platforms
-            default_relative_floor(SCREEN_X, &relative_boss_floor);// Reset relative floor level to the default floor level
-            colision_floor_boss();
-        }
-    } else {
-        adam_smasher->enemy->basics->vy = 0; // Reset vertical velocity if not jumping or falling
-        adam_smasher->jumping = 0; // Reset jumping state
-        adam_smasher->falling = 0; // Reset falling state
-    }
-
-	char retorno = update_boss_position(adam_smasher, relative_boss_floor.y, player_1->basics);
-    
-	update_bullets(adam_smasher->enemy->gun, 0, SCREEN_X, rolling_velocity);
-
-    return retorno;					
-}
-
 void must_init(bool test, const char *description)
 {
     if(test) return;
@@ -668,6 +606,72 @@ void colision_floor() { //REVER NECESSIDADE DESTA FUNÇÃO
         //player_1->jumping = 0; // Reset jumping state
     }
 }
+
+
+char update_boss(){
+    //se morreu só atualiza os tiros que ja tinham sido feitos
+    if(!adam_smasher){
+        adam_smasher = boss_create(SCREEN_X / 2, SCREEN_Y / 2, adam_sprite, adam_bullets);
+    }
+	char retorno = 0;
+
+    if(adam_smasher->enemy->hp <= 0){
+        update_bullets(adam_smasher->enemy->gun, 0, SCREEN_X, rolling_velocity);
+        return -2;
+    }
+
+    update_relative_floor(&relative_boss_floor, map_ajustment, &relative_boss_floor); // Update the relative floor level based on the player's position
+
+    if(simple_collide(adam_smasher->enemy->basics->x, adam_smasher->enemy->basics->y, adam_smasher->enemy->basics->x + adam_smasher->enemy->basics->width, 
+                        adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height,
+                        relative_boss_floor.x, relative_boss_floor.y, relative_boss_floor.x + relative_boss_floor.width, relative_boss_floor.y + relative_boss_floor.height)) {
+        adam_smasher->enemy->basics->y = relative_boss_floor.y - adam_smasher->enemy->basics->height; // Set player position to the top of the floor
+        adam_smasher->enemy->basics->vy = 0; // Reset vertical velocity
+        adam_smasher->jumping = 0; // Reset jumping state
+        adam_smasher->falling = 0; // Reset falling state
+    } else {
+        adam_smasher->falling = 1; // Set falling state if not colliding with the floor
+    }
+    
+    if((adam_smasher->jumping) && (adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height >= (relative_boss_floor.y - 450))) {
+        adam_smasher->jump(adam_smasher, UP); // Call the jump function if the player is jumping
+    } else if(adam_smasher->falling) {
+        adam_smasher->jumping = 0; // Reset jumping state if the player is falling
+        adam_smasher->fall(adam_smasher, DOWN); // Call the fall function if the player is falling
+        int index;
+        for(index = 0; index < NUM_PLATFORMS; index++) {																																										//Verifica se o primeiro jogador está colidindo com alguma plataforma (!)
+            if(simple_collide(adam_smasher->enemy->basics->x, adam_smasher->enemy->basics->y, adam_smasher->enemy->basics->x + adam_smasher->enemy->basics->width,
+                                adam_smasher->enemy->basics->y + adam_smasher->enemy->basics->height,
+                                vector_platform[index]->x - map_ajustment, vector_platform[index]->y, (vector_platform[index]->x - map_ajustment) + vector_platform[index]->width, 
+                                vector_platform[index]->y + vector_platform[index]->height)) {
+                
+                update_relative_floor(vector_platform[index], map_ajustment, &relative_boss_floor); // Update the floor level based on the platform's position
+                adam_smasher->enemy->basics->y = vector_platform[index]->y - adam_smasher->enemy->basics->height; // Set player position to the top of the platform
+                adam_smasher->enemy->basics->vy = 0; // Reset vertical velocity
+                adam_smasher->falling = 0; // Stop falling                 
+                
+                break;
+            } 
+
+        }
+        if(index == NUM_PLATFORMS) { // If no collision with platforms
+            default_relative_floor(SCREEN_X, &relative_boss_floor);// Reset relative floor level to the default floor level
+            colision_floor_boss();
+        }
+    } else {
+        adam_smasher->enemy->basics->vy = 0; // Reset vertical velocity if not jumping or falling
+        adam_smasher->jumping = 0; // Reset jumping state
+        adam_smasher->falling = 0; // Reset falling state
+    }
+    if(!(adam_smasher->jumping || adam_smasher->falling)){
+        retorno = update_boss_position(adam_smasher, relative_boss_floor.y, player_1->basics);
+    } else retorno = 2;
+    
+	update_bullets(adam_smasher->enemy->gun, 0, SCREEN_X, rolling_velocity);
+
+    return retorno;					
+}
+
 
 char update_position(){			
     //se morreu só atualiza os tiros que ja tinham sido feitos
