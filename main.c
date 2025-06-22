@@ -226,7 +226,7 @@ int main(){
                     al_draw_scaled_bitmap(menu_screen, 0, 0,  1920, 960, 0, 0, SCREEN_X, SCREEN_Y, 0);
                 } else if(tela == IN_GAME) {
 
-                    if(!adam_smasher && !player_1->sandevistan){
+                    if(!adam_smasher && !player_1->sandevistan && !player_1->squat){
                         if(player_1->fix_camera) {
                             rolling_velocity = player_1->basics->vx;
                         } else rolling_velocity = 0;
